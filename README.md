@@ -1,6 +1,6 @@
 # BA Totalisatie Systeem
 
-Een Spring Boot applicatie voor het berekenen en beheren van BA (Business Analytics) totalen via een REST API.
+Een Spring Boot applicatie voor het berekenen en beheren van BA
 
 ## 📋 Overzicht
 
