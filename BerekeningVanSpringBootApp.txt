@@ -1,0 +1,79 @@
+/bootspring 
+.\mvnd.bat spring-boot:run
+
+/frontend 
+cd frontend 
+node server.js
+
+## POORTEN:
+# Backend API: http://localhost:8080
+# Frontend UI: http://localhost:3000
+
+de app krijgt in de totalen berekening ook nog een andere veld mee met een percentage waar mee gerekent moet worden. "Bijdragepercentage". over de records is dit hetzlefde en wordt meegegeven als parameter bij aanroepen van endpoint. is een decimaal getal (als %)
+Hiernaast nog een attribuut om een calculatie mee uit te voeren (noem dit cijfer 6)
+Cijfer 7, 8, 9 worden pas bij het calculeren als attribuut aangemaakt maar zijn verder niet nodig voor de totalen endpoint response. dit blijven er maar 5 
+Je kan deze berekening doen als je de totalen uit de database hebt (van dus 6 cijfers)
+bdehoud de algemene cijfer naamgeving
+Totalen direct in calculate response (standaard)
+
+1: 2000
+2: 500
+Bijdragepercentage: 40%
+3: 400
+4: 1600
+5: 200
+6: 500
+
+Cijfers input = 6 cijfers (nu nog 5)
+Cijfers ouput  = 5 cijfers uit de berekeningen
+
+
+#berekening 1 = Output voor total = Cijfer 1
+
+cijfer 1
+cijfer 2
+cijfer 7 (aanmaken voor verdere calculate)
+Bijdragepercentage
+
+if cijfer 1 > cijfer 2 / Bijdragepercentage
+    Cijfer 7 = cijfer 1 
+    cijfer 1 = cijfer 2 / Bijdragepercentage
+else 
+    Cijfer 7 = cijfer 1 
+    cijfer 1 = cijfer 1
+
+
+#berekening 2 (altijd na berekening 1) - Output voor total = cijfer 8
+
+cijfer 1
+Cijfer 2 
+cijfer 3
+cijfer 7
+cijfer 8
+
+cijfer 3 / cijfer 7 = percentage 
+percentage * cijfer 1 = cijfer 8
+
+
+
+#berekening 3 (altijd na berekening 1) - Output voor total = cijfer 9
+
+cijfer 1
+Cijfer 2 
+cijfer 4
+cijfer 7
+cijfer 9
+
+cijfer 4 / cijfer 7 = percentage 
+percentage * cijfer 1 = cijfer 9
+
+
+#Berekening 4 - Output voor total = cijfer 5
+
+cijfer 5 8 Bijdragepercentage
+
+
+
+#Berekening 5 - Output voor total = cijfer 6
+
+cijfer 6 gewoon de normale sum

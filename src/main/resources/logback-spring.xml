@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- Configureerbare log paths via application.properties -->
+    <springProperty scope="context" name="LOG_PATH" source="logging.path" defaultValue="./logs"/>
+    <springProperty scope="context" name="LOG_LEVEL" source="logging.level.root" defaultValue="INFO"/>
+    
+    <!-- Configureerbare log file settings -->
+    <springProperty scope="context" name="LOG_APP_MAX_SIZE" source="logging.file.application.max-size" defaultValue="10MB"/>
+    <springProperty scope="context" name="LOG_APP_MAX_HISTORY" source="logging.file.application.max-history" defaultValue="30"/>
+    
+    <!-- Console appender voor directe output -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+        <!-- Synchroniseer console output voor betere volgorde -->
+        <immediateFlush>true</immediateFlush>
+    </appender>
+    
+    <!-- Algemene application log -->
+    <appender name="APPLICATION_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/app.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/app.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>${LOG_APP_MAX_SIZE}</maxFileSize>
+            <maxHistory>${LOG_APP_MAX_HISTORY}</maxHistory>
+        </rollingPolicy>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+    </appender>
+    
+    <!-- Calculation-specifieke logs -->
+    <appender name="CALCULATION_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/ba-calc.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/ba-calc.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>${LOG_APP_MAX_SIZE}</maxFileSize>
+            <maxHistory>${LOG_APP_MAX_HISTORY}</maxHistory>
+        </rollingPolicy>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+    </appender>
+    
+    <!-- Logger voor ba services - naar calculation file en console -->
+    <logger name="com.totals.service.ba" level="INFO" additivity="false">
+        <appender-ref ref="CALCULATION_FILE"/>
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+    
+    <!-- Logger voor BaController - minder verbose tijdens tests -->
+    <logger name="com.totals.controller.BaController" level="WARN" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+    
+    <!-- Logger voor test classes - alleen naar console, niet naar app.log -->
+    <logger name="com.totals.controller.BaSequentialTest" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+    
+    <!-- Logger voor Ba20CallsTest - alleen naar console, niet naar app.log -->
+    <logger name="com.totals.controller.Ba20CallsTest" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+    
+    <!-- Verminder Spring Boot startup logging tijdens tests -->
+    <logger name="org.springframework" level="WARN" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+    
+    <!-- Verminder Hibernate logging tijdens tests -->
+    <logger name="org.hibernate" level="WARN" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+    
+    <!-- Verminder Tomcat logging tijdens tests -->
+    <logger name="org.apache.catalina" level="WARN" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+    
+    <!-- Logger voor exception handler - naar application file en console -->
+    <logger name="com.totals.exception.GlobalExceptionHandler" level="INFO" additivity="false">
+        <appender-ref ref="APPLICATION_FILE"/>
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+    
+    <!-- Root logger - naar application file en console -->
+    <root level="${LOG_LEVEL}">
+        <appender-ref ref="APPLICATION_FILE"/>
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>

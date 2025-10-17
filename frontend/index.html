@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BA Totalisatie Frontend</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .section h2 {
+            margin-top: 0;
+            color: #555;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button.delete {
+            background-color: #f44336;
+        }
+        button.delete:hover {
+            background-color: #da190b;
+        }
+        button.edit {
+            background-color: #2196F3;
+        }
+        button.edit:hover {
+            background-color: #0b7dda;
+        }
+        button.bulk {
+            background-color: #FF9800;
+        }
+        button.bulk:hover {
+            background-color: #F57C00;
+        }
+        .message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .hidden {
+            display: none;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>BA Totalisatie Frontend</h1>
+        
+        <!-- BA Records Section -->
+        <div class="section">
+            <h2>BA Records Beheer</h2>
+            
+            <!-- Add/Edit Form -->
+            <div id="recordForm">
+                <h3 id="formTitle">Nieuwe BA Record Toevoegen</h3>
+                <form id="recordFormElement">
+                    <input type="hidden" id="recordId" value="">
+                    <div class="form-group">
+                        <label for="kenmerk">Kenmerk:</label>
+                        <input type="text" id="kenmerk" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cijfer1">Cijfer 1:</label>
+                        <input type="number" id="cijfer1" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label for="cijfer2">Cijfer 2:</label>
+                        <input type="number" id="cijfer2" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label for="cijfer3">Cijfer 3:</label>
+                        <input type="number" id="cijfer3" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label for="cijfer4">Cijfer 4:</label>
+                        <input type="number" id="cijfer4" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label for="cijfer5">Cijfer 5:</label>
+                        <input type="number" id="cijfer5" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label for="cijfer6">Cijfer 6:</label>
+                        <input type="number" id="cijfer6" step="0.01">
+                    </div>
+                    <button type="submit" id="submitBtn">Opslaan</button>
+                    <button type="button" id="cancelBtn" class="hidden">Annuleren</button>
+                </form>
+            </div>
+            
+            <!-- Records Table -->
+            <div id="recordsTable">
+                <h3>BA Records</h3>
+                <button onclick="loadRecords()">Ververs</button>
+                <button onclick="bulkInsertRecords()" class="bulk">Bulk Toevoegen (10K)</button>
+                <button onclick="deleteAllRecords()" class="delete">Verwijder Alle Records</button>
+                <div id="recordsLoading" class="loading hidden">Laden...</div>
+                <table id="recordsTableElement" class="hidden">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Kenmerk</th>
+                            <th>Cijfer 1</th>
+                            <th>Cijfer 2</th>
+                            <th>Cijfer 3</th>
+                            <th>Cijfer 4</th>
+                            <th>Cijfer 5</th>
+                            <th>Cijfer 6</th>
+                            <th>Acties</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recordsTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- BA Totals Section -->
+        <div class="section">
+            <h2>BA Totals</h2>
+            <div class="form-group">
+                <label for="bijdragePercentage">Bijdragepercentage (1-100):</label>
+                <input type="number" id="bijdragePercentage" min="1" max="100" value="40" required>
+            </div>
+            <button onclick="loadTotals()">Ververs Totalen</button>
+            <button onclick="calculateTotals()">Bereken Totalen</button>
+            <button onclick="deleteAllTotals()" class="delete">Verwijder Alle Totalen</button>
+            <button onclick="checkDatabaseStatus()">Test Database</button>
+            <div id="totalsLoading" class="loading hidden">Laden...</div>
+            <table id="totalsTable" class="hidden">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Kenmerk</th>
+                        <th>Totaal 1</th>
+                        <th>Totaal 2</th>
+                        <th>Totaal 3</th>
+                        <th>Totaal 4</th>
+                        <th>Totaal 5</th>
+                        <th>Bijgewerkt Op</th>
+                        <th>Acties</th>
+                    </tr>
+                </thead>
+                <tbody id="totalsTableBody">
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Messages -->
+        <div id="messageContainer"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
