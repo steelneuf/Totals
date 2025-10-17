@@ -70,20 +70,9 @@ spring.datasource.hikari.maximum-pool-size=10
 ```bash
 # Ga naar de database directory
 cd database
-
-# Voer de database scripts uit in volgorde
-# 1. Maak de database aan
-psql -U postgres -f 01_create_database.sql
-
-# 2. Maak de tabellen aan
-psql -U ba_user -d ba_totals_db -f 02_create_tables.sql
-
-# 3. Voeg sample data toe (optioneel)
-psql -U ba_user -d ba_totals_db -f 03_sample_data.sql
-
-# Test de database connectie
-test_connection.bat
 ```
+
+Voer setup.bat uit, door op bestand te klikken in je directory 
 
 ### 2. Backend Setup
 
